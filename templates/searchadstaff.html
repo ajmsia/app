@@ -1,0 +1,117 @@
+{% extends 'base.html' %} {% block content %}
+<body>
+  {% include 'staffnav.html' %}
+
+  <h1 class="text-3xl font-bold text-gray-700 px-7 mt-7">Pending Admissions</h1>
+  <div class="p-7 text-gray-700">
+    <input
+      id="search-input"
+      class="block w-full p-3 bg-gray-100 rounded-xl"
+      type="text"
+      name="name"
+      placeholder="Search Student"
+      onkeyup="handleInputChange()"
+    />
+
+    <div id="content" class="py-7 gap-y-8 flex flex-col"></div>
+  </div>
+</body>
+<!-- Added SweetAlert2 library for displaying popup alerts, the Socket.IO library for real-time communication with a server
+Also added JS functions to handle events 
+Used Tailwind CSS for design-->
+<script src="https://unpkg.com/sweetalert2@7.8.2/dist/sweetalert2.all.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/3.1.1/socket.io.js"></script>
+<script>
+  function handleUpdateStatus(id, status) {
+    axios
+      .patch(`/registrations/${id}`, {
+        status,
+      })
+      .then((data) => {
+        swal({
+          title: "Success",
+          text: "Student status updated!",
+          type: "success",
+          showCancelButton: false,
+          confirmButtonColor: "rgb(99, 102, 241)",
+          confirmButtonText: "Close",
+        });
+      })
+      .catch((err) => console.log(err));
+  }
+
+  function handleAccept(id) {
+    handleUpdateStatus(id, "accepted");
+  }
+
+  function handleReject(id) {
+    handleUpdateStatus(id, "rejected");
+  }
+
+  function handleInputChange() {
+    const result = admissions.filter((item) => {
+      const value = document.getElementById("search-input").value;
+      const keyword = value.trim().split(" "); // ["John", "Doe"]
+
+      for (let q of keyword) {
+        if (
+          item.first_name.toLowerCase()?.includes(q.toLowerCase()) ||
+          item.last_name.toLowerCase()?.includes(q.toLowerCase())
+        ) {
+          return true;
+        }
+      }
+
+      return false;
+    });
+
+    renderContent(result);
+  }
+
+  const admissions = JSON.parse(`{{ admissions|tojson|safe }}`);
+
+  function renderContent(data) {
+    const content = document.getElementById("content");
+    let listContent = "";
+    data.reverse().forEach((admission) => {
+      listContent += `
+          <div class="bg-gray-50 px-12 py-8 rounded-2xl">
+              <div class="grid grid-cols-2 gap-4">
+                  <div class="col-span-1">
+                      <div>Name: ${admission.first_name} ${
+        admission.last_name
+      }</div>
+                      <div>Course: ${admission.subject ?? "-"}</div>
+                  </div>
+                  <div class="col-span-1">
+                      <div>Contact Number: ${admission.phone}</div>
+                      <div>Email: ${admission.email}</div>
+                      <div>Date of birth: ${admission.dob}</div>
+                  </div>
+              </div>
+              <div class="flex gap-2 mt-4">
+                  <button onclick="handleAccept(${admission.id})" 
+                  class="items-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Accept</button>
+                  <button onclick="handleReject(${
+                    admission.id
+                  })" class="bg-red-400 hover:bg-red-500 text-white px-4 py-1 rounded-lg">Reject</button>
+              </div>
+          </div>
+      `;
+    });
+    content.innerHTML = listContent;
+  }
+
+  renderContent(admissions || []);
+
+  const socket = io.connect();
+
+  socket.on("registrations", function (payload) {
+    console.log("response received");
+    payload = JSON.parse(JSON.stringify(payload));
+    renderContent(payload.data);
+  });
+</script>
+<!-- Establishes a socket connection with the server -->
+
+{% endblock %}

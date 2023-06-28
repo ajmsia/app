@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+<!--  -->
+
+{% block content %}
+<body>
+  {% include 'nav.html' %}
+  <main class="p-8 text-gray-700">
+    <h1 class="text-2xl font-semibold">Welcome! 🎉</h1>
+    <p class="text-xs text-center text-gray-400 mb-12 mt-7 px-6">
+      Venison pig pork chop filet mignon drumstick beef tri-tip alcatra strip
+      steak ribeye pastrami pork loin prosciutto shoulder.
+    </p>
+    <form action="{{ url_for('register') }}" method="post">
+      <div class="flex flex-col gap-7">
+        <div class="flex flex-col gap-2">
+          <label class="font-bold" for="course">Course</label>
+          <select
+            class="bg-gray-100 p-2 px-4 text-sm rounded-lg"
+            name="course"
+            required
+          >
+            <option selected value="">Select</option>
+            <option value="LIS161">LIS 161</option>
+            <option value="LIS51">LIS 60</option>
+            <option value="LIS55">LIS 55</option>
+          </select>
+        </div>
+
+        <div class="flex flex-col gap-4">
+          <header class="font-bold">Basic Information</header>
+          <input
+            class="bg-gray-100 p-2 px-4 text-sm rounded-lg"
+            placeholder="First Name"
+            required
+            name="first_name"
+          />
+          <input
+            class="bg-gray-100 p-2 px-4 text-sm rounded-lg"
+            placeholder="Middle Name"
+            required
+            name="middle_name"
+          />
+          <input
+            class="bg-gray-100 p-2 px-4 text-sm rounded-lg"
+            placeholder="Last Name"
+            required
+            name="last_name"
+          />
+        </div>
+
+        <label class="font-bold" for="date">Birthday</label>
+        <input
+          class="bg-gray-100 p-2 px-4 text-sm rounded-lg"
+          required
+          type="date"
+          name="dob"
+        />
+
+        <label class="font-bold" for="sex">Sex</label>
+        <select
+          class="bg-gray-100 p-2 px-4 text-sm rounded-lg"
+          name="sex"
+          required
+        >
+          <option disabled selected>Select</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+        </select>
+
+        <div class="flex flex-col gap-4">
+          <header class="font-bold mt-12">Contact Information</header>
+          <textarea
+            required
+            rows="5"
+            class="bg-gray-100 p-2 px-4 text-sm rounded-lg"
+            name="address"
+            placeholder="Address"
+          ></textarea>
+          <input
+            required
+            class="bg-gray-100 p-2 px-4 text-sm rounded-lg"
+            placeholder="Contact Number"
+            name="phone"
+            type="number"
+          />
+          <input
+            required
+            class="bg-gray-100 p-2 px-4 text-sm rounded-lg"
+            placeholder="Email Address"
+            name="email"
+            type="email"
+          />
+        </div>
+
+        <div class="flex flex-col gap-4">
+          <header class="font-bold mt-12">Emergency Contact Information</header>
+          <input
+            required
+            class="bg-gray-100 p-2 px-4 text-sm rounded-lg"
+            placeholder="Contact Person"
+            name="emergency_contact_name"
+          />
+          <input
+            required
+            class="bg-gray-100 p-2 px-4 text-sm rounded-lg"
+            placeholder="Contact Number"
+            name="emergency_contact_number"
+          />
+          <input
+            required
+            class="bg-gray-100 p-2 px-4 text-sm rounded-lg"
+            placeholder="Relationship"
+            name="emergency_contact_relation"
+          />
+        </div>
+
+        <div class="text-center text-xs text-gray-400 mt-12">
+          Bacon ipsum dolor amet pig prosciutto jerky short ribs swine, beef
+          ribs chuck pancetta shank.
+        </div>
+
+        <div class="w-full">
+          <div class="flex gap-2 items-center justify-center mb-4">
+            <input type="checkbox" required />
+            <div class="text-xs text-gray-400">
+              Agree to the <a href="#">Terms and Conditions</a>
+            </div>
+          </div>
+          <button
+            class="w-full items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            type="submit"
+          >
+            Submit
+          </button>
+        </div>
+      </div>
+    </form>
+  </main>
+</body>
+
+{% endblock %}
